@@ -10,6 +10,17 @@ permissions:
   pull-requests: write
 
 jobs:
-  labels:
-    name: "🚀 Run Labeler"
-    uses: z-shell/.github/.github/workflows/labeler.yml@main
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v3
+      - name: ♻️ Fetch Configuration
+        run: |
+          [[ -d .github ]] || command mkdir .github
+          [[ -d .github/labeler.yml ]] || command curl -fsSl https://raw.githubusercontent.com/z-shell/.github/main/.github/lib/labeler.yml -o .github/labeler.yml
+      - name: 🚀 Run Labeler
+        uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          sync-labels: false
